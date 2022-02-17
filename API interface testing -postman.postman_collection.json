@@ -1,0 +1,359 @@
+{
+	"info": {
+		"_postman_id": "789c9754-6493-4f4a-ab38-633b4c8a9c83",
+		"name": "API interface testing -postman",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "log in",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Status of success\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});",
+							"pm.test(\"Status of cose\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(10000);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"token\", \"Bearer \"+ jsonData.data);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"mobile\":\"13800000002\", \"password\":\"123456\"}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sys/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sys",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add staff info",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var m = Math.floor(10000000000 + Math.random() * 90000000000);",
+							"console.log(m)",
+							"pm.globals.set(\"mobile\", m);",
+							"m=pm.globals.get(\"mobile\");",
+							"console.log(m)"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Status of success\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});",
+							"pm.test(\"Status of code\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(10000);",
+							"});",
+							"pm.test(\"Status of department id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.departmentId).to.eql(\"1066239913642561536\");",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.globals.set(\"e_id\", jsonData.data.id);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"gpjgfsig\",\n    \"mobile\": {{mobile}},\n    \"workNumber\":\"11168\",\n    \"timeOfEmployment\":\"2021-07-09\",\n    \"formOfEmployment\":1,\n    \"departmentName\":\"销售\",\n    \"depatemrntId\":\"1266699057968001024\",\n    \"correctionTime\":\"2020-07-30T16:00:00.000Z\"\n    \n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sys/user",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sys",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search staff info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = pm.globals.get(\"e_id\");",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Status of success\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});",
+							"pm.test(\"Status of code\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(10000);",
+							"});",
+							"pm.test(\"Status of department id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.departmentId).to.eql(\"1066239913642561536\");",
+							"});",
+							"",
+							"pm.test(\"Status of id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.id).to.eql(id);",
+							"});",
+							"",
+							"pm.test(\"Status of username\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.username).to.eql(\"gpjgfsig\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var id_1 = pm.globals.get(\"e_id\");",
+							"pm.collectionVariables.set(\"id\", \"id_1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base_url}}/api/sys/user/{{e_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sys",
+						"user",
+						"{{e_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update staff info",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = pm.globals.get(\"e_id\");",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Status of success\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});",
+							"pm.test(\"Status of code\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(10000);",
+							"});",
+							"pm.test(\"Status of department id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.departmentId).to.eql(\"1066239913642561536\");",
+							"});",
+							"",
+							"pm.test(\"Status of id\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.id).to.eql(id);",
+							"});",
+							"",
+							"pm.test(\"Status of username\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.data.username).to.eql(\"weffgds\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\":\"weffgds\"}"
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sys/user/{{e_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sys",
+						"user",
+						"{{e_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete staff info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Status of success\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.success).to.eql(true);",
+							"});",
+							"pm.test(\"Status of cose\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.code).to.eql(10000);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{base_url}}/api/sys/user/{{e_id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"sys",
+						"user",
+						"{{e_id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": ""
+		}
+	]
+}
